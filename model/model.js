@@ -24,6 +24,6 @@ const newMedicineListSchemaa = new mongoose.Schema({
 }, {
     timestamps: true
 });
-exports.newMedicineListSchemaa = mongoose.model('newmedicinelist', newMedicineListSchemaa);
+exports.    newMedicineListSchemaa = mongoose.model('newmedicinelist', newMedicineListSchemaa);
 
 
