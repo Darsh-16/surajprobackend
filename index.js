@@ -15,11 +15,6 @@ require("./db/conn");
 const PORT = process.env.PORT || 1111;
 const filePath = process.env.FILE_PATH || path.join(__dirname, 'uploads');
 
-// Set Mongoose timeouts
-mongoose.set('bufferTimeoutMS', 50000); // 20 seconds
-mongoose.set('serverSelectionTimeoutMS', 50000); // 20 seconds
-mongoose.set('socketTimeoutMS', 50000); // 20 seconds
-
 // Middleware
 app.use(cors({ origin: 'http://localhost:4200' })); // Allow CORS for Angular
 app.use(express.urlencoded({ extended: false }));
