@@ -30,7 +30,7 @@ const upload = multer({
         },
         filename: (req, file, cb) => {
             cb(null, "file" + Date.now() + path.extname(file.originalname));
-        },
+        },  
     }),
 });
 
@@ -134,6 +134,10 @@ app.get('/bulkget', async (req, res) => {
             error: error.message,
         });
     }
+});
+
+app.get('/', (req, res) => {
+    res.send('Backend is working!');
 });
 
 // Server start
