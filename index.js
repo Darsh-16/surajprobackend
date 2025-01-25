@@ -15,20 +15,21 @@ require("./db/conn");
 const PORT = process.env.PORT || 1111;
 const filePath = process.env.FILE_PATH || path.join(__dirname, 'uploads');
 
+// Ensure the uploads directory exists
+if (!fs.existsSync(filePath)) {
+    fs.mkdirSync(filePath, { recursive: true });
+}
+
 // Middleware
-// app.use(cors({ origin: 'http://localhost:4200' })); // Allow CORS for Angular
-// List of allowed origins
 const allowedOrigins = [
     'http://localhost:4200',
     'http://localhost:3000',
     'https://rikcapital.netlify.app',
 ];
 
-// CORS configuration
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
+        if (!origin) return callback(null, true); // Allow requests without origin
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         } else {
@@ -49,7 +50,7 @@ const upload = multer({
         },
         filename: (req, file, cb) => {
             cb(null, "file" + Date.now() + path.extname(file.originalname));
-        },  
+        },
     }),
 });
 
@@ -64,13 +65,13 @@ app.post("/bulkAdded", upload.single('csvFile'), async (req, res) => {
 
     const jsonArray = [];
     const result = [];
-    const filePath = req.file.path;
+    const uploadedFilePath = req.file.path;
 
     try {
-        fs.createReadStream(filePath)
+        fs.createReadStream(uploadedFilePath)
             .pipe(csvParser())
             .on('data', (data) => {
-                console.log("datasss",data)
+                console.log("Parsed data:", data);
                 jsonArray.push(data);
             })
             .on('end', async () => {
@@ -96,7 +97,7 @@ app.post("/bulkAdded", upload.single('csvFile'), async (req, res) => {
                     }
                 }
 
-                fs.unlink(filePath, (err) => {
+                fs.unlink(uploadedFilePath, (err) => {
                     if (err) console.error("Error deleting file:", err);
                 });
 
