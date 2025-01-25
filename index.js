@@ -16,7 +16,26 @@ const PORT = process.env.PORT || 1111;
 const filePath = process.env.FILE_PATH || path.join(__dirname, 'uploads');
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:4200' })); // Allow CORS for Angular
+// app.use(cors({ origin: 'http://localhost:4200' })); // Allow CORS for Angular
+// List of allowed origins
+const allowedOrigins = [
+    'http://localhost:4200',
+    'http://localhost:3000',
+    'https://rikcapital.netlify.app',
+];
+
+// CORS configuration
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/files', express.static(filePath)); // Serve uploaded files if needed
